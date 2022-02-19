@@ -1,0 +1,1 @@
+_base_ = './raptor_raft_bwfw_detrs_r18_siamese_sem_detrs_htc_r50_1x_ft3d_od_pretrained.py'
