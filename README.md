@@ -192,7 +192,7 @@ motion_cost_volume=dict(
 ## Acknowledgement
 
 The research was supported by CTU student grant SGS20/171/OHK3/3T/13 and by Toyota
-Motor Europe HS.
+Motor Europe.
 
 #### Please consider seeing the following work:
 - [Learning to Segment Rigid Motions from Two Frames](https://github.com/gengshan-y/rigidmask)
