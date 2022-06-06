@@ -5,6 +5,7 @@
 # Contact: neoramic@fel.cvut.cz
 #
 # This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+import os
 
 import torch
 import torch.nn as nn
@@ -76,6 +77,8 @@ class RAFTplus(nn.Module):
 
         # MIDAS init
         model_type = "MiDaS"
+        if 'CACHE_TORCH' in os.environ:
+            torch.hub.DEFAULT_CACHE_DIR = os.environ['CACHE_TORCH']
         self.midas = torch.hub.load("intel-isl/MiDaS", model_type)
         midas_transforms = torch.hub.load("intel-isl/MiDaS", "transforms")
 

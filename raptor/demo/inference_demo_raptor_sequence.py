@@ -37,10 +37,13 @@ def build_model(checkpoint_file, image_size):
         config_file = args.config_file
 
     config = load_and_change_config(config_file, image_size)
-    checkpoint_file_filtered = filter_checkpoint_file(checkpoint_file)
-
-    # build the model from a config file and a checkpoint file
-    model = init_detector(config, checkpoint_file_filtered, device='cuda:' + args.gpuid)
+    if 'CACHE_TORCH' in os.environ:
+        model = init_detector(config, checkpoint_file, device='cuda:' + args.gpuid)
+    else:
+        checkpoint_file_filtered = filter_checkpoint_file(checkpoint_file)
+        # build the model from a config file and a checkpoint file
+        model = init_detector(config, checkpoint_file_filtered, device='cuda:' + args.gpuid)
+    
     try:
         a = model.cfg.data.test.pipeline
     except:
