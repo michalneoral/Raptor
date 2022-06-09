@@ -1,6 +1,6 @@
 from raptor.demo.inference_tools import *
 from tqdm import tqdm
-
+import os
 
 def get_image_size(root, sequence, specific_subdir=None):
     if specific_subdir is None:
@@ -186,8 +186,13 @@ def get_input_args(argv=None):
 
     parser = argparse.ArgumentParser(description='input arguments for evaluation')
     parser.add_argument('--gpuid', default='1')
-    parser.add_argument('--config_file', default=None, help="Configuration file.py path. If not set, it is parsed from checkpoint_file")
-    parser.add_argument('--checkpoint_file', required=True, help="Model weights path")
+    if 'CACHE_TORCH' in os.environ:
+        parser.add_argument('--config_file', default='/home/repositories/Raptor/raptor/configs/raptor/raptor.py', help="Configuration file.py path. If not set, it is parsed from checkpoint_file")
+        parser.add_argument('--checkpoint_file', default='/home/repositories/Raptor/raptor/weights/raptor_bmvc_2021.pth', help="Model weights path")
+    else:
+        parser.add_argument('--config_file', default=None, help="Configuration file.py path. If not set, it is parsed from checkpoint_file")
+        parser.add_argument('--checkpoint_file', required=True, help="Model weights path")
+
     parser.add_argument('--debug', action='store_true', help="Debug mode with showing images during estimation process")
 
     parser.add_argument('--confidence_threshold', default=0.3, help="Confidence threshold for output images")
