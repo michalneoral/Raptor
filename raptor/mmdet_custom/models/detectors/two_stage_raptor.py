@@ -14,7 +14,7 @@ from raptor.mmdet_custom.models.builder import build_motion_backbone
 from mmdet.models.detectors.base import BaseDetector
 
 
-@DETECTORS.register_module()
+@DETECTORS.register_module(force=True)
 class TwoStageDetectorRaptor(BaseDetector):
     """Base class for two-stage detectors.
 
@@ -269,7 +269,7 @@ class TwoStageDetectorRaptor(BaseDetector):
         """Test without augmentation."""
         assert self.with_bbox, 'Bbox head must be implemented.'
 
-        print('keys: \n', kwargs.keys())
+        # print('keys: \n', kwargs.keys())
 
         img, kwargs = self.format_inputs_for_test(img, kwargs)
 

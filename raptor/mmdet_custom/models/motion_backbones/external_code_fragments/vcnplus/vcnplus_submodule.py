@@ -10,6 +10,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import numpy as np
 import math
+import tqdm
 
 class WarpModule(nn.Module):
     """
@@ -1085,7 +1086,8 @@ def get_intrinsics(intr, noise=False):
 
 
 def F_ngransac(hp0, hp1, Ks, rand, unc_occ, iters=1000, cv=False, Kn=None):
-    print('CV: ', cv)
+    if cv:
+        tqdm.tqdm.write('Using OpenCV for Essential camera matrix (R,t)')
     if Kn is None:
         Kn = Ks
     import cv2

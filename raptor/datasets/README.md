@@ -62,6 +62,10 @@ unzip SceneFlow_MSplus.zip
 ## DAVIS-Moving - COCO format
 COCO format files for Raptor's evaluation on the Davis dataset[^ponttuset2017].
 
+The DAVIS-Moving dataset is a subset of the original dataset (the key for choosing particular sequences is mentioned in the ["Towards Segmenting Anything That Moves"](https://arxiv.org/abs/1902.03715)[^dave2019] paper).
+Thus, you have first to download DAVIS dataset separately.
+Then, in the "Towards" [repo](https://github.com/achalddave/segment-any-moving/tree/master/release) are the subsets of the sequences as `release/dataset_name/moving_{train|val}_sequences.txt`
+
 ### Download
 ```
 cd YOUR_davis_directory
@@ -79,6 +83,11 @@ unzip DAVISMoving_coco.zip
 
 ## YTVOS-Moving - COCO format
 COCO format files for Raptor's evaluation on the YTVOS dataset[^xu2018].
+
+The YTVOS-Moving dataset is a subset of the original dataset (the key for choosing particular sequences is mentioned in the ["Towards Segmenting Anything That Moves"](https://arxiv.org/abs/1902.03715)[^dave2019] paper).
+Thus, you have first to download YTVOS dataset separately.
+Then, in the "Towards" [repo](https://github.com/achalddave/segment-any-moving/tree/master/release) are the subsets of the sequences as `release/dataset_name/moving_{train|val}_sequences.txt`
+
 
 ### Download
 ```
@@ -122,3 +131,4 @@ This work is licensed under a <a rel="license" href="http://creativecommons.org/
 [^mayer2016]: Mayer, N.; Ilg, E.; Hausser, P.; Fischer, P.; Cremers, D.; Dosovitskiy, A. & Brox, T. A Large Dataset to Train Convolutional Networks for Disparity, Optical Flow, and Scene Flow Estimation. CVPR, 2016.
 [^ponttuset2017]: Jordi Pont-Tuset, Federico Perazzi, Sergi Caelles, Pablo Arbeláez, Alex Sorkine-Hornung, and Luc Van Gool. The 2017 davis challenge on video object segmentation. arXiv preprint arXiv:1704.00675, 2017.
 [^xu2018]: Xun Xu, Loong Fah Cheong, and Zhuwen Li. Motion segmentation by exploiting complementary geometric models. CVPR, 2018.
+[^dave2019] Dave, A.; Tokmakov, P. & Ramanan, D. Towards segmenting everything that moves, CVPR WS 2019 (arXiv preprint arXiv:1902.03715), 2019

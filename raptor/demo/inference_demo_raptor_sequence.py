@@ -144,7 +144,7 @@ def main(args):
             T.iter()
             result = inference_moseg_detector(model, file_name_path, file_name_2_path, calib_K=calib_K, calib_K_2=calib_K_2, calib_baseline=calib_baseline, calib_K_0=calib_K_0, img0=file_name_0_path, additional_outputs_setting=['flow_t_t-1'])
             t = T.iter()
-            print(t)
+            pbar.write(f'Estimation time {t:2.4f}')
             if isinstance(result[1], dict):
                 result, flow_t_tm1_torch = result[0], result[1]['flow_t_t-1']
             else:

@@ -1,5 +1,8 @@
 # Raptor - Monocular Arbitrary Moving Object Discovery and Segmentation
 
+### Changelog
+* [June 2022] Added Singularity container DEMO ([information in Container section](./README.md#Container)) 
+
 Official repository with implementation of the paper: <br>
 Neoral, M.; Šochman, J. & Matas, J.: "**Monocular Arbitrary Moving Object Discovery and Segmentation**", BMVC 2021<br>
 
@@ -24,7 +27,6 @@ If you use this work please cite:
     year      = {2021},
     }
 </pre>
-
 
 ## Abstract
 We propose a method for discovery and segmentation of objects that are, or their parts are,
@@ -188,6 +190,37 @@ motion_cost_volume=dict(
             )
 ```
 
+## Container
+    
+For the demo, the [Singularity container (version 3.7)](https://sylabs.io/guides/3.7/user-guide/) was created.
+
+You can download the demo from the singularity hub:
+
+
+First, you have to specify your torch cache directory. It has to be outside the container with writing access - some weights are downloaded during the first container run.
+
+```bash
+SINGULARITYENV_CACHE_TORCH='/mnt/path/to/your/dir/.cache'
+```
+
+If there are some troubles during downloading files from torch hub, you can download them from [gdrive](https://drive.google.com/file/d/1ldBp03F2sCRG4SaDs-KLaCDApEOjHAuh/view?usp=sharing).
+In case you have gdown installed:
+```bash
+gdown https://drive.google.com/uc?id=1ldBp03F2sCRG4SaDs-KLaCDApEOjHAuh -O Raptor_cache.zip
+```
+
+RUN example for KITTI dataset:
+```bash
+SINGULARITYENV_CACHE_TORCH='/mnt/path/to/your/dir/.cache' singularity run --nv raptor_demo.sif \
+--gpuid 1 # specify GPU number \
+--input_dict /mnt/your/path/to/kitti/KITTI/multiview/training/image_2 # specify dict with your images \
+--output_dict /mnt/your/save/path/ # you have to have writing access \
+--extension png # pick only png images from the dir \
+--save_custom_outputs --save_outputs # have to be set to produce output images \
+--file_prefix 000049_ # produce output only for particular images
+```
+
+Basically, **the switches are the same as defined above for the demo**.
 
 ## Acknowledgement
 
