@@ -1,0 +1,138 @@
+Bootstrap: docker
+From: nvidia/cuda:11.1-cudnn8-devel-ubuntu20.04
+
+%labels
+	ContainerName: Raptor-BMVC-2021
+	Desc: Raptor CNN for Instance Motion Segmentation
+	Author: Michal Neoral
+	Maintainer: neoramic@fel.cvut.cz
+	AuthorEmail: neoramic@fel.cvut.cz
+	Paper: https://www.bmvc2021-virtualconference.com/assets/papers/1500.pdf
+	Git: https://github.com/michalneoral/Raptor 
+	Version: v1.0.0
+
+%help
+	A singularity container for running the Raptor CNN for Instance Motion Segmentation
+	For more information (and actualized help), see https://github.com/michalneoral/Raptor#Container
+
+	First, you have to specify your torch cache directory. It has to be outside the container with writing access - some weights are downloaded during the first container run.
+	SINGULARITYENV_CACHE_TORCH='/mnt/path/to/your/dir/.cache'
+	
+	If there are some troubles during downloading files from torch hub, you can download them from the following link:
+	https://drive.google.com/file/d/1ldBp03F2sCRG4SaDs-KLaCDApEOjHAuh/view?usp=sharing	
+	
+	In case you have gdown installed:
+	gdown https://drive.google.com/uc?id=1ldBp03F2sCRG4SaDs-KLaCDApEOjHAuh -O Raptor_cache.zip
+	
+
+	RUN example for KITTI dataset:
+
+SINGULARITYENV_CACHE_TORCH='/mnt/path/to/your/dir/.cache' singularity run --nv raptor_demo.sif \
+ --gpuid 1 # specify GPU number \
+ --input_dict /mnt/your/path/to/kitti/KITTI/multiview/training/image_2 # specify dict with your images \
+ --output_dict /mnt/your/save/path/ # you have to have writing access \ 
+ --extension png # pick only png images from the dir \
+ --save_custom_outputs --save_outputs # have to be set to produce output images \
+ --file_prefix 000049_ # produce output only for particular images
+
+	Basically, the switches are the same as defined in the README.md (github).	
+	
+	
+	
+
+%environment
+	export LC_ALL=C
+
+%post
+	# Removing old nvidia keys and installing the new ones
+	# The most painful part
+	# https://forums.developer.nvidia.com/t/notice-cuda-linux-repository-key-rotation/212772
+
+	rm -f /etc/apt/sources.list.d/cuda.list
+	rm -f /etc/apt/sources.list.d/nvidia-ml.list
+	apt-key del 7fa2af80
+	apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub
+        apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64/7fa2af80.pub
+
+
+	# Downloads the latest package lists (important).
+	apt-get update -y
+
+	# install critical libs
+	DEBIAN_FRONTEND=noninteractive apt-get install -y libopenblas-base \
+	libmpich-dev \
+	libibverbs-dev \
+	ffmpeg libsm6 libxext6 \
+	curl
+
+	# install nvidia tool kit
+	distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+        curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+        curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+               sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+               tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+	apt update
+	apt install -y libnvidia-container-tools
+
+	# Install python
+	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+	python3.8-dev python3.8-tk python3-pip python3-setuptools systemd imagemagick curl git \
+	cython vim
+
+        python3 -m pip install virtualenv
+
+	mkdir /home/venv
+	virtualenv /home/venv/raptor
+	. /home/venv/raptor/bin/activate
+
+	# Update pip
+	python3 -m pip install --upgrade pip
+
+	# Install python libraries
+	python3 -m pip install wheel
+	
+	# Install PyTorch
+	pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
+
+	# move to repo dir
+	cd /home
+	mkdir repositories
+	cd repositories
+
+	# install MMCV from source
+	git clone https://github.com/open-mmlab/mmcv.git
+	cd mmcv
+	git branch v1.4.2
+	pip install -r requirements/optional.txt
+	TORCH_CUDA_ARCH_LIST="6.1+PTX" MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e .
+	cd ..
+	#python3 -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.1/index.html
+
+	# install MMDET from source
+	git clone https://github.com/open-mmlab/mmdetection.git
+	cd mmdetection
+	git branch v2.21.0
+	pip install -r requirements/build.txt
+	pip install "git+https://github.com/open-mmlab/cocoapi.git#subdirectory=pycocotools"
+	pip install -v -e .
+	cd ..
+
+	# install RAFT
+	git clone https://github.com/michalneoral/raft_fork
+	cd raft_fork
+	pip install -v -e .
+	cd ..	
+	
+	# install RAPTOR
+	git clone https://github.com/michalneoral/Raptor.git
+	cd Raptor
+	pip install -v -e .
+	cd raptor/weights        # download weights 1/2
+	bash download_weights.sh # download weights 2/2
+	cd ..
+
+%runscript
+	. /home/venv/raptor/bin/activate
+	/home/venv/raptor/bin/python3.8 /home/repositories/Raptor/raptor/demo/inference_demo_raptor_sequence.py "$@"
+
+

@@ -192,11 +192,23 @@ motion_cost_volume=dict(
 
 ## Container
     
-For the demo, the [Singularity container (version 3.7)](https://sylabs.io/guides/3.7/user-guide/) was created.
+For the Raptor demo, the [Singularity container (version 3.7)](https://sylabs.io/guides/3.7/user-guide/) was created.
 
-You can download the demo from the singularity hub:
+#### Getting raptor_demo container
+You can download Raptor demo Singularity container from the [gdrive](https://drive.google.com/file/d/1QHFZXoDMQ4nJAAVbyPwJjFU54vfT7_kc/view?usp=sharing) or using gdown:
+```bash
+gdown https://drive.google.com/uc?id=1QHFZXoDMQ4nJAAVbyPwJjFU54vfT7_kc -O raptor_demo.sif
+```
+or you can build it from the [recipe file](https://github.com/michalneoral/Raptor/blob/main/raptor_demo.def).
 
+The MMCV inside the container was compiled with NVidia Compute Compatibility **6.1** (NVidia GTX 10XX(Ti), QUADRO P, TESLA P and newer).
+If you need to compile the demo for an older graphic card, set your Compute Compatibility on line 107 in the [recipe file](https://github.com/michalneoral/Raptor/blob/main/raptor_demo.def).
+Then build the container from scratch:
+```bash
+sudo singularity build raptor_demo.sif /path/to/raptor/git/Raptor/raptor_demo.def
+```
 
+#### Running raptor_demo container
 First, you have to specify your torch cache directory. It has to be outside the container with writing access - some weights are downloaded during the first container run.
 
 ```bash
@@ -212,15 +224,15 @@ gdown https://drive.google.com/uc?id=1ldBp03F2sCRG4SaDs-KLaCDApEOjHAuh -O Raptor
 RUN example for KITTI dataset:
 ```bash
 SINGULARITYENV_CACHE_TORCH='/mnt/path/to/your/dir/.cache' singularity run --nv raptor_demo.sif \
---gpuid 1 # specify GPU number \
+--gpuid 1                            # specify GPU number \
 --input_dict /mnt/your/path/to/kitti/KITTI/multiview/training/image_2 # specify dict with your images \
---output_dict /mnt/your/save/path/ # you have to have writing access \
---extension png # pick only png images from the dir \
+--output_dict /mnt/your/save/path/   # you have to have writing access \
+--extension png                      # pick only png images from the dir \
 --save_custom_outputs --save_outputs # have to be set to produce output images \
---file_prefix 000049_ # produce output only for particular images
+--file_prefix 000049_                # produce output only for particular subset of images
 ```
 
-Basically, **the switches are the same as defined above for the demo**.
+Basically, **the switches are the same as defined above for the demo**, except you do not have to specify config_file and checkpoint_file.
 
 ## Acknowledgement
 
