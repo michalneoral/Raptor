@@ -6,7 +6,7 @@
 Official repository with implementation of the paper: <br>
 Neoral, M.; Šochman, J. & Matas, J.: "**Monocular Arbitrary Moving Object Discovery and Segmentation**", BMVC 2021<br>
 
-[:page_facing_up:PAPER-PDF](https://www.bmvc2021-virtualconference.com/assets/papers/1500.pdf) |
+[:page_facing_up:PAPER-PDF](https://www.bmva-archive.org.uk/bmvc/2021/assets/papers/1500.pdf) |
 [:movie_camera:POSTER-VIDEO](https://www.bmvc2021-virtualconference.com/conference/papers/paper_1500.html) |
 [:film_strip:POSTER-SLIDES](https://docs.google.com/presentation/d/18L7vNkBCsQ2mmfzCSwgnJuR0L3R8ffZ0KzzaonRFCuc/edit?usp=sharing)
 
